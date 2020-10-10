@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>好看的radio</title>
+    <style>
+
+    .rd {
+      display: none;  /* 将原生的radio隐藏 */
+    }
+
+    .radio-span{
+      font-size: 18px;
+      padding-right: 20px;
+    }
+     
+    /* label 模拟 “底部框” */
+    .rd + label {
+      vertical-align:bottom;  
+      display: inline-block;
+      position: relative;
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: #eee;
+      box-shadow: 0 1px 15px rgba(0, 0, 0, 0.1) inset, 0 1px 4px rgba(0, 0, 0, 0.1) inset, 1px -1px 2px rgba(0, 0, 0, 0.1); 
+    }
+     
+    /* “label::before伪元素 模拟 “选择小圆块” */
+    .rd + label:before {
+      content: '';
+      position: absolute;
+      top: 24px;
+      left: 12px;   
+      z-index: 500;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: #fff;
+      -webkit-transition: all 0.15s ease-in;
+      transition: all 0.15s ease-in;
+    }
+     
+    /* radio选中状态时，“底部框”的样式 */
+    .rd:checked + label {
+      background: #333;  
+    }
+     
+    /* radio选中状态时，“选择小圆块”的样式 */
+    .rd:checked + label:before {
+      content: '';
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 16px;
+      height: 16px;     
+    }
+    </style>
+</head>
+<body>
+    <input type="radio" name="sex" class="rd" id="rd1" checked>
+    <label for="rd1"></label>
+    <span class="radio-span">男</span>
+    <input type="radio" name="sex" class="rd" id="rd2">
+    <label for="rd2"></label>
+    <span class="radio-span">女</span>
+
+    <input type="radio" name="gener" class="rd" id="rd3" checked>
+    <label for="rd3"></label>
+    <span class="radio-span">男</span>
+    <input type="radio" name="gener" class="rd" id="rd4">
+    <label for="rd4"></label>
+    <span class="radio-span">女</span>
+</body>
+</html>
