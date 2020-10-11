@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>模拟textarea</title>
+    <style>
+        .modal-textarea{
+            width: 400px;
+            min-height: 100px;
+            max-height: 300px;
+            overflow-x: hidden;
+            overflow-y: auto;
+            border:1px solid #eee;
+            border-radius: 2px;
+            outline: 0;
+            word-wrap:break-word;
+            resize: vertical;
+            padding: 10px;
+            border-color: rgba(82, 168, 236, 0.8);
+            
+        }
+       .modal-textarea[placeholder]:empty:before{
+            content:attr(placeholder);
+            color:#999;
+        }
+        .modal-textarea:focus{
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+            content: none;
+        }
+
+    </style>
+</head>
+
+<body>
+    
+    <div contenteditable="true" class="modal-textarea" placeholder="请输入文字"></div>
+
+
+<script type="text/javascript" src='../components/jquery.js'></script>
+<script type="text/javascript">
+    
+</script>
+</body>
+</html>
