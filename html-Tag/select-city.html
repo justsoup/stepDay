@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>省市二级联动</title>
+    <style>
+        .modal-select {
+            position: relative;
+            width: 100px;
+            height: 30px;
+            line-height: 30px;
+            background-color: #fff;
+            border: 1px solid #e4e4e4;
+            border-radius: 3px;
+            text-indent: 5px;
+        }
+
+        .modal-select .modal-select-tip {
+            position: relative;
+            width: 100%;
+            height: 28px;
+            line-height: 30px;
+            color: #666;
+            text-indent: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+
+        .modal-select .modal-select-tip.close:after {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            content: '';
+            width: 0;
+            height: 0;
+            border-left:6px solid transparent;
+            border-right:6px solid transparent;
+            border-top: 6px solid #333;
+        }
+
+        .modal-select .modal-select-tip.open:after {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            content: '';
+            width: 0;
+            height: 0;
+            border-left:6px solid transparent;
+            border-right:6px solid transparent;
+            border-bottom: 6px solid #333;
+        }
+
+        .modal-select .modal-select-option {
+            position: absolute;
+            top: 30px;
+            left: -1px;
+            display: none;
+            list-style: none;
+            border: 1px solid #e4e4e4;
+            border-top: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            z-index: 99;
+            background-color: #fff;
+        }
+
+        .modal-select .modal-select-option li {
+            height: 28px;
+            line-height: 28px;
+            color: #333;
+            font-size: 14px;
+            margin: 0;
+            padding: 0;
+            text-indent: 10px;
+            cursor: pointer;
+        }
+
+        .modal-select .modal-select-option li:hover {
+            background-color: #f3f3f3;
+        }
+
+        .modal-select .modal-select-option li.seleced {
+            background-color: #f3f3f3;
+        }
+
+
+        .modal-select-menu{
+            width: 320px;
+            display: flex;
+        }
+        .modal-select-menu .modal-select-province{
+            flex:1;
+        }
+        .modal-select-menu .modal-select-city{
+            flex:2;
+        }
+    </style>
+</head>
+
+<body>
+<!--模拟下拉-->
+<div class="modal-select-menu">
+    <div class="modal-select modal-select-province">
+        <div class="modal-select-tip close" data-value="">请选择</div>
+        <ul class="modal-select-option">
+
+        </ul>
+    </div>
+
+    <div style="margin: 10px"></div>
+
+    <div class="modal-select modal-select-city">
+        <div class="modal-select-tip close" data-value="">请选择</div>
+        <ul class="modal-select-option">
+        </ul>
+    </div>
+</div>
+
+
+
+<script type="text/javascript" src='../components/jquery.js'></script>
+<script type="text/javascript">
+
+    $(function() {
+        selectModal();
+
+        selectModalCity();
+    });
+
+    function selectModal() {
+
+        $('.modal-select').each(function(){
+            $(this).click(function(){
+                //如果下拉列表有元素
+                if($(this).children('.modal-select-option').children().length){
+                    $(this).children('.modal-select-option').toggle();
+                    $(this).children('.modal-select-tip').toggleClass('close');
+                    $(this).children('.modal-select-tip').toggleClass('open');
+                }
+            })
+            $(this).mouseleave(function () {
+                $(this).children('.modal-select-option').hide();
+                $(this).children('.modal-select-tip').addClass('close');
+                $(this).children('.modal-select-tip').removeClass('open');
+            })
+        })
+        $('.modal-select-option').each(function(){
+            $(this).on('click','li',function(){
+                $(this).parent().prev().text($(this).text());
+            })
+        })
+    }
+
+    function selectModalCity(){
+        let $province=$('.modal-select-province'),
+            $city=$('.modal-select-city');
+        let regionData=null;
+
+        // 获取省市数据
+        function formatData(level,value){
+            let result=[],
+                data=null;
+            if(level===0){
+                $(regionData).each(function (index,item) {
+                    result.push(item.name);
+                })
+            }
+            if(level===1){
+                $(regionData).filter(function (index,item) {
+                    if(item.name===value){
+                        data=item;
+                        return false;
+                    }
+                });
+                if(data){
+                    $(data['city']).each(function (index,item) {
+                        result.push(item.name);
+                    })
+                }
+            }
+            return result;
+        }
+
+        //绑定省市数据
+        function bindData(data){
+            let result='';
+            $.each(data,function(index,item){
+                result+='<li data-option="'+index+'">'+item+'</li>';
+            })
+            return result;
+        }
+
+        //清空下拉菜单数据
+        function clear(flag){
+            switch(flag){
+                case 0:
+                    $province.children('.modal-select-option').html('');
+                    break;
+                case 1:
+                    $city.children('.modal-select-option').html('');
+                    break;
+                default:
+                    $province.children('.modal-select-option').html('');
+                    $city.children('.modal-select-option').html('');
+            }
+        }
+
+        $.ajax({
+            url:'../json/regionData.json',
+            method:'get',
+            dataType:'json',
+            cache:false,
+            success:function(result){
+                regionData=result;
+
+                let data=formatData(0),
+                    provinceResult=bindData(data);
+                $province.children('.modal-select-option').append(provinceResult);
+
+
+                $province.on('click','li',function () {
+                    clear(1);
+                    let value=$(this).text(),
+                        cityResult=bindData(formatData(1,value));
+                    $city.children('.modal-select-tip').text('请选择');
+                    $city.children('.modal-select-option').append(cityResult);
+                })
+            }
+        })
+    }
+
+
+
+
+
+</script>
+</body>
+</html>
