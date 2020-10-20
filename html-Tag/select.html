@@ -122,16 +122,23 @@ function selectModal() {
 
     $('.modal-select').each(function(){
         $(this).click(function(){
-            $(this).children('.modal-select-option').toggle();
-            $(this).children('.modal-select-tip').toggleClass('close');
-            $(this).children('.modal-select-tip').toggleClass('open');
-
+            //如果下拉列表有元素
+            if($(this).children('.modal-select-option').children().length){
+                $(this).children('.modal-select-option').toggle();
+                $(this).children('.modal-select-tip').toggleClass('close');
+                $(this).children('.modal-select-tip').toggleClass('open');
+            }
+        })
+        $(this).mouseleave(function () {
+            $(this).children('.modal-select-option').hide();
+            $(this).children('.modal-select-tip').addClass('close');
+            $(this).children('.modal-select-tip').removeClass('open');
         })
     })
     $('.modal-select-option').each(function(){
         $(this).on('click','li',function(){
             $(this).parent().prev().text($(this).text());
-    })
+        })
     })
 }
 </script>
